@@ -1,0 +1,21 @@
+Partner Transaction
+       │
+       ▼
+Check wallet routing
+   ├── Routed to Route A → Route A Module
+   │          ├─ Check configured source bank
+   │          │   ├─ No active bank → Error / Stuck
+   │          │   └─ Bank active → Account Validation
+   │          │          ├─ Failed → Stuck
+   │          │          └─ Passed → Send Transaction
+   │          │                  ├─ Success → Paid
+   │          │                  └─ Failure → Processing
+   ├── Routed to Route B → Route B Module
+   │          ├─ Check configured source bank
+   │          │   ├─ No active bank → Error / Stuck
+   │          │   └─ Bank active → Account Validation
+   │          │          ├─ Failed → Stuck
+   │          │          └─ Passed → Send Transaction
+   │          │                  ├─ Success → Paid
+   │          │                  └─ Failure → Processing
+   └── Wallet not routed anywhere → Transaction does not move forward → Stuck
