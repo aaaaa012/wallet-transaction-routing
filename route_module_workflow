@@ -1,0 +1,28 @@
+# Route Module Workflow
+
+## overview
+This document explains the transaction processing flow within route modules (Route A and Route B) including source bank checks, account validation, and transaction status.
+
+## Modules
+
+- Route A Module
+- Route B Module
+
+Each module must have a pre-configured active source bank for processing transactions. If there's no active source bank, transactions routed to that module will fail, with an error or remain stuck.
+
+## Steps
+1. Check if wallet is routed to this module
+2. Verfiy active source bank for that module
+ - No active bank -> Transaction stuck/ error
+3. Account Validation
+  - Failed -? Transaction stuck
+  - Passed -> Proceed for settlement
+4. Send Transaction
+ - Success-> Paid
+ - Failure -> Processing
+5. Transaction status can be checked post API Hits
+6. Wallet not routed anywhere -> Transaction stuck
+
+## Edge Cases and notes
+ - Wallet supported by both Route A and Route B will be processed according to the routing configuration only. If the wallet is supported by both but not routed to any, the transaction doesnot move forward.
+ - Source bank configuration is mandatory per route. If a route doesnot have an active source bank, attempts to process a transaction through that route should return an error and leave the transaction in a stuck state.
