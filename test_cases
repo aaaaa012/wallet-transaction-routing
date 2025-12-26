@@ -1,9 +1,0 @@
-| Test Case | Test Scenario                                                                    | Method | End Point                     |Response Code   |
-|-----------|-------------------------------------------------------------------------------  -|--------|------------------------------ |----------------|
-| T001      | Created a wallet Transactionafter source bank setup with a validAccount details  | Post   | /V0/Transfer                  | 0              |
-| T002      | Fetch agent list for wallet                                                      | Post   | /V0/GetWalletList             | 0              |
-| T003      | Fetch agent list for wallet                                                      | Post   | /V0/GetWalletList             | 0              |
-| T004      | Account Validation                                                               | Post   | /V0/Validation                | 0              |
-| T005      | Account Validation                                                               | Post   | /V0/Validation                | 1              |
-| T006      | Send transaction                                                                 | Post   | /V0/Transfer                  | 0              |
-| T006      | Check status                                                                     | Post   | /V0/CheckTransactionStatus    | 0              |

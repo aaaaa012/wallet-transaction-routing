@@ -1,26 +1,55 @@
-# Wallet-Transaction-Routing
+# Wallet Transaction Routing Engine
 
-##Overview
+[![Business Domain](https://img.shields.io/badge/Domain-Fintech%20%2F%20Wallets-blue)](https://github.com/topics/fintech)
+[![Status](https://img.shields.io/badge/Status-Production-success)](https://github.com/topics/status)
 
-This project demonstrates the **end-to-end routing and processing of wallet transactions** (e.g., IME Pay, Prabhu Pay) through multiple route modules. The system supports multiple routes with pre-configured source banks. Transactions are routed and processed based on the wallet’s configuration and routing setup.
+## 📌 Executive Summary
 
-## Routing and Processing Logic
-1. Transaction Creation
-   - Send Partner Initiates a transaction.
-2. Routing Decision
-   - Wallet routed to Route A -> processed via Route A Module
-   - Wallet routed to Route B -> Processed via Route B Module
-   - Wallet not routed anywhere -> transaction does not move forward ->stuck
-3. Route Module Processing
-    - Check Configured Source Bank
-        - No active bank -> error /stuck
-    - Account Validation
-        - Failed -> Stuck
-        - Passed -> Proceed
-    - Send Transaction
-        - Success -> Paid
-        - Failure -> Processing
-4. Transaction Status
-    - Can be checked after the API Processing
-    - Status: (Success:debit 000 /credit 000/) (Failure: debit 999 / credit 999)
-  
+This repository documents the **Smart Routing Engine** designed to orchestrate wallet top-ups and transfers (e.g., IME Pay, Prabhu Pay) across multiple payment rails. The system ensures high success rates by dynamically routing transactions to the most stable or cost-effective "Route Module" (e.g., Route A vs. Route B) based on real-time configuration.
+
+## 📂 Repository Structure
+
+| Directory | Content Description |
+|-----------|-------------------|
+| **[Requirements](./documentation/Requirements/)** | Logic for selection, source bank validation, and error handling. |
+| **[API Specification](./documentation/API/)** | Endpoints for Transfer, Validation, and Routing. |
+| **[Process Flows](./documentation/Process-Flows/)** | Visual diagrams of the Decision Tree. |
+| **[Testing](./documentation/Testing/)** | QA Test Scenarios for different routing conditions. |
+
+## ⚙️ How It Works
+
+The routing logic acts as a traffic controller:
+
+1.  **Ingestion**: A transfer request comes in for a specific wallet provider (e.g., "Wallet X").
+2.  **Lookup**: System checks detailed configuration to see which Route (A or B) handles "Wallet X".
+3.  **Health Check**: Verifies if the selected route has an **Active Source Bank** required to fund the transaction.
+4.  **Execution**:
+    *   **Pass**: Validate Account -> Debit Source -> Credit Wallet.
+    *   **Fail**: If no route or no bank is active, the transaction ends in a `STUCK` / `ERROR` state to prevent fund loss.
+
+## 📊 Logic Snapshot
+
+> *See [Routing Diagrams](./documentation/Process-Flows/Routing_Diagrams.md) for full detail.*
+
+```mermaid
+graph LR
+    A[Incoming Request] --> B{Routing Config?}
+    B -- Route A --> C{Source Bank Active?}
+    B -- Route B --> D{Source Bank Active?}
+    B -- None --> E[Status: STUCK]
+    
+    C -- Yes --> F[Validate & Pay]
+    D -- Yes --> F
+    C -- No --> E
+    D -- No --> E
+```
+
+---
+
+## 🛠 Features
+
+- **Dynamic Switching**: Change routing from Route A to Route B instantly via config without code changes.
+- **Fail-Safe**: Strict validation of "Source Bank" liquidity before attempting a transfer.
+- **Visibility**: Detailed status codes (`000` for success, `999` for failure) for easy debugging.
+
+---
